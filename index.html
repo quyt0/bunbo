@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển VNĐ sang bún bò</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍜</text></svg>">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --broth-red: #D9381E; /* Đỏ sa tế */
+            --broth-orange: #F28500; /* Cam nước dùng */
+            --noodle-white: #FFFDD0; /* Trắng ngà sợi bún */
+            --onion-green: #4CAF50; /* Xanh lá hành */
+            --text-dark: #3E2723; /* Nâu thịt bò */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Background gradient mô phỏng nồi bún bò nóng hổi */
+            background: radial-gradient(circle at center, var(--broth-orange) 0%, var(--broth-red) 100%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .bowl-container {
+            background-color: var(--noodle-white);
+            padding: 30px 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3), inset 0 0 15px rgba(242, 133, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 4px solid var(--broth-orange);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--broth-red);
+            font-size: 28px;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="number"], select {
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--broth-orange);
+            box-shadow: 0 0 8px rgba(242, 133, 0, 0.5);
+        }
+
+        input[type="number"] {
+            flex: 1;
+        }
+
+        .price-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .radio-label {
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .radio-label:hover {
+            background: #ffe0b2;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + .radio-label {
+            background: var(--broth-orange);
+            color: white;
+            border-color: var(--broth-red);
+        }
+
+        #customPriceWrapper {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            border: 2px dashed var(--onion-green);
+            display: none; /* Ẩn cho đến khi có số liệu */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .result-box h2 {
+            margin: 0 0 10px 0;
+            color: var(--onion-green);
+            font-size: 24px;
+        }
+
+        .result-box p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        /* Highlight cả con số lẫn chữ "Tô bún bò" */
+        .highlight {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--broth-red);
+            display: block;
+            margin: 10px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bowl-container">
+        <h1>🍜 CHUYỂN ĐỔI BÚN BÒ HUẾ 🌶️</h1>
+        
+        <div class="form-group">
+            <label>💸 Số tiền bạn đang có:</label>
+            <div class="input-group">
+                <input type="number" id="moneyInput" placeholder="Nhập số tiền..." min="0">
+                <select id="moneyUnit">
+                    <option value="1000">Nghìn đồng</option>
+                    <option value="1000000">Triệu đồng</option>
+                    <option value="1000000000">Tỷ đồng</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>🥩 Chọn giá 1 bún bò:</label>
+            <div class="price-options">
+                <input type="radio" name="bowlPrice" id="price30" value="30000" checked>
+                <label class="radio-label" for="price30">30K</label>
+
+                <input type="radio" name="bowlPrice" id="price35" value="35000">
+                <label class="radio-label" for="price35">35K</label>
+
+                <input type="radio" name="bowlPrice" id="price40" value="40000">
+                <label class="radio-label" for="price40">40K</label>
+
+                <input type="radio" name="bowlPrice" id="price45" value="45000">
+                <label class="radio-label" for="price45">45K</label>
+
+                <input type="radio" name="bowlPrice" id="price50" value="50000">
+                <label class="radio-label" for="price50">50K</label>
+
+                <input type="radio" name="bowlPrice" id="priceCustom" value="custom">
+                <label class="radio-label" for="priceCustom">Tùy chỉnh...</label>
+            </div>
+            
+            <div id="customPriceWrapper" class="input-group">
+                <input type="number" id="customPriceInput" placeholder="Nhập giá (VD: 65000)" min="1000">
+                <span style="line-height: 44px; font-weight: bold; color: #666;">VNĐ</span>
+            </div>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h2>Chà chà! 😋</h2>
+            <p>Với số tiền này, bạn có thể quất:</p>
+            <span class="highlight" id="bowlCount">0 bún bò!</span>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các element cần thiết
+        const moneyInput = document.getElementById('moneyInput');
+        const moneyUnit = document.getElementById('moneyUnit');
+        const customPriceInput = document.getElementById('customPriceInput');
+        const priceRadios = document.getElementsByName('bowlPrice');
+        const resultBox = document.getElementById('resultBox');
+        const bowlCountDisplay = document.getElementById('bowlCount');
+        
+        let lastBowlCount = 0; // Lưu lại để tránh spam pháo giấy
+
+        // Hàm bắn pháo giấy
+        function triggerConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#D9381E', '#F28500', '#FFFDD0', '#4CAF50', '#FFC107'],
+                gravity: 1.2,
+                ticks: 200
+            });
+        }
+
+        // Hàm ẩn/hiện ô nhập giá tuỳ chỉnh
+        function toggleCustomPrice() {
+            const isCustom = document.getElementById('priceCustom').checked;
+            const customWrapper = document.getElementById('customPriceWrapper');
+            customWrapper.style.display = isCustom ? 'flex' : 'none';
+        }
+
+        // Hàm tính toán tự động
+        function calculateBunBo() {
+            const moneyStr = moneyInput.value;
+            // Nếu chưa nhập tiền thì ẩn kết quả đi
+            if (!moneyStr) {
+                resultBox.style.display = 'none';
+                return;
+            }
+
+            const moneyInputValue = parseFloat(moneyStr);
+            const moneyUnitValue = parseFloat(moneyUnit.value);
+            
+            if (isNaN(moneyInputValue) || moneyInputValue < 0) {
+                resultBox.style.display = 'none';
+                return;
+            }
+
+            const totalMoney = moneyInputValue * moneyUnitValue;
+
+            let bowlPrice = 0;
+            for (let radio of priceRadios) {
+                if (radio.checked) {
+                    if (radio.value === 'custom') {
+                        bowlPrice = parseFloat(customPriceInput.value);
+                    } else {
+                        bowlPrice = parseFloat(radio.value);
+                    }
+                    break;
+                }
+            }
+
+            // Nếu giá tô bún không hợp lệ thì cũng ẩn kết quả
+            if (isNaN(bowlPrice) || bowlPrice <= 0) {
+                resultBox.style.display = 'none';
+                return;
+            }
+
+            // Tính toán
+            const bowls = totalMoney / bowlPrice;
+
+            // Hiển thị kết quả (Gộp chung chuỗi)
+            const formattedBowls = bowls.toLocaleString('vi-VN', { maximumFractionDigits: 2 });
+            bowlCountDisplay.innerText = formattedBowls + ' bún bò!';
+            resultBox.style.display = 'block';
+
+            // Bắn pháo giấy nếu quy đổi được >= 100 tô và trước đó chưa vượt mốc này
+            if (bowls >= 100 && lastBowlCount < 100) {
+                triggerConfetti();
+            }
+            lastBowlCount = bowls; // Cập nhật lại số lượng
+        }
+
+        // Gắn sự kiện (Event Listeners) để kích hoạt tính toán tự động
+        moneyInput.addEventListener('input', calculateBunBo);
+        moneyUnit.addEventListener('change', calculateBunBo);
+        customPriceInput.addEventListener('input', calculateBunBo);
+
+        for (let radio of priceRadios) {
+            radio.addEventListener('change', () => {
+                toggleCustomPrice();
+                calculateBunBo();
+            });
+        }
+    </script>
+</body>
+</html>
