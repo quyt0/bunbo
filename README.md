@@ -30,17 +30,17 @@ Since this is a 100% Client-side static web app, there is absolutely zero enviro
 
 Or check out the Live Demo [here](https://bunbo.izcuyt.com)
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 HTML/CSS: Core structure and interface (Responsive design, CSS Animations).
 
 Vanilla JavaScript: Real-time DOM manipulation and core mathematical logic.
 
 Canvas Confetti: The magical library powering the epic celebratory explosions.
 
-🤝 Contributing
+## 🤝 Contributing
 Want to add side-dish conversions like "Iced Tea" (Trà đá), "Fried Dough" (Quẩy), or "Extra Beef" (Thêm thịt)? Don't hesitate to Fork this repo and submit a Pull Request! All culinary code contributions are highly welcome.
 
-📄 License
+## 📄 License
 This project is distributed under the MIT License. Feel free to clone, modify, and use it (just don't use it to sell fake noodle soup).
 
 Coded with ❤️ and chili oil.
