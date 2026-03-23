@@ -22,13 +22,13 @@ Since this is a 100% Client-side static web app, there is absolutely zero enviro
 
 1. Clone this repository to your local machine:
    ```bash
-   git clone [https://github.com/quyt0/bunbo.git](https://github.com/quyt0/bunbo.git)
+   git clone https://github.com/quyt0/bunbo.git
    ```
 2. Open the downloaded folder.
 3. Double-click the index.html file to open it in any modern web browser (Chrome, Edge, Safari, Brave...).
 4. Input your money and enjoy!
 
-Or check out the Live Demo here: [Insert your GitHub Pages link here]
+Or check out the Live Demo [here](https://github.com/quyt0/bunbo.git)
 
 🛠️ Tech Stack
 HTML/CSS: Core structure and interface (Responsive design, CSS Animations).
